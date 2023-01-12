@@ -1,31 +1,23 @@
-import { FC } from 'react'
+import { forwardRef } from 'react'
 
 import type { Props } from './Types'
 
 import { Image } from './Styles'
-import { useDrag } from 'react-dnd'
 
-const Tile: FC<Props> = ({ image, width, height }) => {
-	const [{ isDragging }, dragRef] = useDrag(
-		() => ({
-			type: 'Tile',
-			// item: { text },
-			collect: monitor => ({
-				isDragging: monitor.isDragging(),
-			}),
-		}),
-		[]
-	)
+const Tile = forwardRef<HTMLImageElement, Props>(
+	({ image, width, height }, ref) => {
+		return (
+			<Image
+				src={image}
+				width={width}
+				height={height}
+				alt='Tile'
+				ref={ref}
+			/>
+		)
+	}
+)
 
-	return (
-		<Image
-			src={image}
-			width={width}
-			height={height}
-			alt='Tile'
-			ref={dragRef}
-		/>
-	)
-}
+Tile.displayName = 'Tile'
 
 export default Tile

@@ -14,6 +14,8 @@ import {
 	GameContainer,
 } from './AppStyles'
 import { Shuffle } from 'Utils/Array'
+import DragTile from 'Components/DragTile/DragTile'
+import DropDropTile from 'Components/DropDropTile/DropDropTile'
 
 const EmptyImage =
 	'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
@@ -108,24 +110,26 @@ const App: FC = () => {
 					height={TileHeight * Row}
 				>
 					{Tiles.map(tileData => (
-						<Tile
+						<DropDropTile
 							image={
 								IsPreviewShowing ? tileData.image : EmptyImage
 							}
 							key={tileData.id}
 							width={TileWidth}
 							height={TileHeight}
+							id={tileData.id}
 						/>
 					))}
 				</TilesContainer>
 			</GameContainer>
 			<ShuffledTilesContainer>
 				{ShuffledTiles.map(tileData => (
-					<Tile
+					<DragTile
 						image={tileData.image}
 						key={tileData.id}
 						width={TileWidth}
 						height={TileHeight}
+						id={tileData.id}
 					/>
 				))}
 			</ShuffledTilesContainer>
