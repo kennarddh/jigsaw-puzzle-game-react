@@ -3,16 +3,27 @@ import { FC } from 'react'
 import type { Props } from './Types'
 
 import { Image } from './Styles'
+import { useDrag } from 'react-dnd'
 
-const Tile: FC<Props> = ({ image, width, height, x, y }) => {
+const Tile: FC<Props> = ({ image, width, height }) => {
+	const [{ isDragging }, dragRef] = useDrag(
+		() => ({
+			type: 'Tile',
+			// item: { text },
+			collect: monitor => ({
+				isDragging: monitor.isDragging(),
+			}),
+		}),
+		[]
+	)
+
 	return (
 		<Image
 			src={image}
 			width={width}
 			height={height}
-			top={height * y}
-			left={width * x}
 			alt='Tile'
+			ref={dragRef}
 		/>
 	)
 }

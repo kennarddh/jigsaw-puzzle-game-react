@@ -6,3 +6,8 @@ export interface ITile {
 }
 
 export type ITiles = ITile[]
+
+export interface ITilesContainer {
+	width: number
+	height: number
+}
