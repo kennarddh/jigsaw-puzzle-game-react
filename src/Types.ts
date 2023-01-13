@@ -14,5 +14,4 @@ export interface ITilesContainer {
 
 export interface IItem {
 	id: string
-	dragDrop: boolean
 }

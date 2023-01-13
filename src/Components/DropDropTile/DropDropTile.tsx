@@ -16,7 +16,7 @@ const DropDropTile: FC<Props> = ({ image, width, height, id }) => {
 	const [, dragRef] = useDrag<IItem>(
 		() => ({
 			type: 'Tile',
-			item: { id: ModifiedTiles[id] as string, dragDrop: true },
+			item: { id: ModifiedTiles[id] as string },
 			canDrag() {
 				return !!ModifiedTiles[id]
 			},
@@ -28,8 +28,6 @@ const DropDropTile: FC<Props> = ({ image, width, height, id }) => {
 		() => ({
 			accept: 'Tile',
 			drop(item) {
-				if (!item.dragDrop) return SetTile(id, item.id)
-
 				const previousPosition = ReversedModifiedTiles[item.id]
 
 				if (previousPosition === id) return

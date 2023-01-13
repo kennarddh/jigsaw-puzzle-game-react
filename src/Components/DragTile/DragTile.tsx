@@ -13,7 +13,7 @@ const DragTile: FC<Props> = ({ image, width, height, id }) => {
 	const [, dragRef] = useDrag<IItem>(
 		() => ({
 			type: 'Tile',
-			item: { id, dragDrop: false },
+			item: { id },
 			canDrag() {
 				// eslint-disable-next-line security/detect-object-injection
 				return !ReversedModifiedTiles[id]
