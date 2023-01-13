@@ -1,11 +1,10 @@
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useContext, useEffect, useMemo, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 import ImagePromise from 'Utils/ImagePromise'
 
-import type { ITiles } from './Types'
+import type { ITile, ITiles } from './Types'
 
-import Tile from 'Components/Tile/Tile'
 import {
 	TilesContainer,
 	Container,
@@ -16,6 +15,7 @@ import {
 import { Shuffle } from 'Utils/Array'
 import DragTile from 'Components/DragTile/DragTile'
 import DropDropTile from 'Components/DropDropTile/DropDropTile'
+import TilesContext from 'Contexts/TilesContext'
 
 const EmptyImage =
 	'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
@@ -23,11 +23,13 @@ const EmptyImage =
 const App: FC = () => {
 	const [ImageUrl] = useState<string>('image.png')
 	const [Tiles, SetTiles] = useState<ITiles>([])
-	const [Row] = useState<number>(5)
-	const [Column] = useState<number>(10)
+	const [Row] = useState<number>(2)
+	const [Column] = useState<number>(2)
 	const [TileWidth, SetTileWidth] = useState<number>(0)
 	const [TileHeight, SetTileHeight] = useState<number>(0)
 	const [IsPreviewShowing, SetIsPreviewShowing] = useState<boolean>(false)
+
+	const { ModifiedTiles, ReversedModifiedTiles } = useContext(TilesContext)
 
 	useEffect(() => {
 		const tiles: ITiles = []
@@ -99,6 +101,15 @@ const App: FC = () => {
 
 	const TogglePreview = () => SetIsPreviewShowing(prev => !prev)
 
+	const ShowTile = (pos: ITile) => {
+		if (IsPreviewShowing) return pos.image
+
+		if (!ModifiedTiles[pos.id]) return EmptyImage
+
+		return Tiles.find(tile => tile.id === ModifiedTiles[pos.id])
+			?.image as string
+	}
+
 	return (
 		<Container>
 			<GameContainer>
@@ -111,9 +122,7 @@ const App: FC = () => {
 				>
 					{Tiles.map(tileData => (
 						<DropDropTile
-							image={
-								IsPreviewShowing ? tileData.image : EmptyImage
-							}
+							image={ShowTile(tileData)}
 							key={tileData.id}
 							width={TileWidth}
 							height={TileHeight}
@@ -125,7 +134,11 @@ const App: FC = () => {
 			<ShuffledTilesContainer>
 				{ShuffledTiles.map(tileData => (
 					<DragTile
-						image={tileData.image}
+						image={
+							ReversedModifiedTiles[tileData.id]
+								? EmptyImage
+								: tileData.image
+						}
 						key={tileData.id}
 						width={TileWidth}
 						height={TileHeight}

@@ -11,3 +11,8 @@ export interface ITilesContainer {
 	width: number
 	height: number
 }
+
+export interface IItem {
+	id: string
+	dragDrop: boolean
+}
