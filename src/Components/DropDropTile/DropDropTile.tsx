@@ -10,7 +10,7 @@ import { IItem } from 'Types'
 import TilesContext from 'Contexts/TilesContext'
 
 const DropDropTile: FC<Props> = ({ image, width, height, id }) => {
-	const { SetTile, ModifiedTiles, ReversedModifiedTiles } =
+	const { SetTile, ModifiedTiles, ReversedModifiedTiles, IsCompleted } =
 		useContext(TilesContext)
 
 	const [, dragRef] = useDrag<IItem>(
@@ -27,6 +27,7 @@ const DropDropTile: FC<Props> = ({ image, width, height, id }) => {
 	const [, dropRef] = useDrop<IItem>(
 		() => ({
 			accept: 'Tile',
+			canDrop: () => !IsCompleted,
 			drop(item) {
 				const previousPosition = ReversedModifiedTiles[item.id]
 

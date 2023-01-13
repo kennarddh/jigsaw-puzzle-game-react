@@ -22,14 +22,20 @@ const EmptyImage =
 
 const App: FC = () => {
 	const [ImageUrl] = useState<string>('image.png')
-	const [Tiles, SetTiles] = useState<ITiles>([])
-	const [Row] = useState<number>(2)
-	const [Column] = useState<number>(2)
 	const [TileWidth, SetTileWidth] = useState<number>(0)
 	const [TileHeight, SetTileHeight] = useState<number>(0)
 	const [IsPreviewShowing, SetIsPreviewShowing] = useState<boolean>(false)
 
-	const { ModifiedTiles, ReversedModifiedTiles } = useContext(TilesContext)
+	const {
+		ModifiedTiles,
+		ReversedModifiedTiles,
+		Row,
+		Column,
+		Tiles,
+		SetTiles,
+		Reset,
+		IsCompleted,
+	} = useContext(TilesContext)
 
 	useEffect(() => {
 		const tiles: ITiles = []
@@ -93,13 +99,17 @@ const App: FC = () => {
 				SetTileHeight(tileHeight)
 			})
 			.catch(console.log)
-	}, [Column, ImageUrl, Row])
+	}, [Column, ImageUrl, Row, SetTiles])
 
 	const ShuffledTiles = useMemo(() => {
 		return Shuffle(Tiles)
 	}, [Tiles])
 
-	const TogglePreview = () => SetIsPreviewShowing(prev => !prev)
+	const TogglePreview = () => {
+		if (IsCompleted) return
+
+		SetIsPreviewShowing(prev => !prev)
+	}
 
 	const ShowTile = (pos: ITile) => {
 		if (IsPreviewShowing) return pos.image
@@ -115,6 +125,7 @@ const App: FC = () => {
 			<GameContainer>
 				<Header>
 					<button onClick={TogglePreview}>Toggle Preview</button>
+					<button onClick={Reset}>Reset</button>
 				</Header>
 				<TilesContainer
 					width={TileWidth * Column + 2}
