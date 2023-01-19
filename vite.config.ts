@@ -30,14 +30,24 @@ export const resolveAlias = Object.entries(relativeAlias).reduce(
 export default defineConfig(({ mode }) => {
 	const envPrefix: string[] = ['APP_']
 
-	const { PORT = 3000, OPEN_BROWSER = 'true' } = {
+	const {
+		PORT = 3000,
+		OPEN_BROWSER = 'true',
+		NODE_ENV = 'development',
+	} = {
 		...loadEnv(mode, process.cwd(), ''),
 	}
 
 	const appEnv = loadEnv(mode, process.cwd(), envPrefix)
 
 	return {
-		plugins: [react(), eslintPlugin(), svgr()],
+		plugins: [
+			react({
+				jsxImportSource: '@welldone-software/why-did-you-render',
+			}),
+			eslintPlugin(),
+			svgr(),
+		],
 		resolve: {
 			alias: resolveAlias,
 		},
@@ -50,7 +60,7 @@ export default defineConfig(({ mode }) => {
 			outDir: 'build',
 		},
 		define: {
-			env: { ...appEnv },
+			env: { ...appEnv, NODE_ENV },
 		},
 	}
 })
