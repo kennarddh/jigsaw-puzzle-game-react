@@ -1,18 +1,20 @@
-import { forwardRef } from 'react'
+import { forwardRef, memo } from 'react'
 
 import type { Props } from './Types'
-
-import { Image } from './Styles'
 
 const Tile = forwardRef<HTMLImageElement, Props>(
 	({ image, width, height }, ref) => {
 		return (
-			<Image
+			<img
 				src={image}
-				width={width}
-				height={height}
 				alt='Tile'
 				ref={ref}
+				style={{
+					width: `${width}px`,
+					height: `${height}px`,
+					border: '1px solid #000',
+					userSelect: 'none',
+				}}
 			/>
 		)
 	}
@@ -20,4 +22,11 @@ const Tile = forwardRef<HTMLImageElement, Props>(
 
 Tile.displayName = 'Tile'
 
-export default Tile
+export default memo(Tile, (prev, next) => {
+	if (prev.height !== next.height) return false
+	if (prev.image !== next.image) return false
+	if (prev.key !== next.key) return false
+	if (prev.width !== next.width) return false
+
+	return true
+})

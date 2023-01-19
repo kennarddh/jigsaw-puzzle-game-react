@@ -10,9 +10,6 @@ export const TilesContainer = styled.div<ITilesContainer>`
 	position: relative;
 	border: 1px solid #000;
 
-	width: ${({ width }) => width}px;
-	height: ${({ height }) => height}px;
-
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;

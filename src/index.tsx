@@ -1,5 +1,5 @@
 /* eslint-disable jest/require-hook */
-import './wdyr.js'
+// import './wdyr.js'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 

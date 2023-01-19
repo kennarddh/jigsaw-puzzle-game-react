@@ -5,16 +5,9 @@ import ImagePromise from 'Utils/ImagePromise'
 
 import type { ITile, ITiles } from './Types'
 
-import {
-	TilesContainer,
-	Container,
-	ShuffledTilesContainer,
-	Header,
-	GameContainer,
-} from './AppStyles'
 import { Shuffle } from 'Utils/Array'
 import DragTile from 'Components/DragTile/DragTile'
-import DropDropTile from 'Components/DropDropTile/DropDropTile'
+import DropDropTile from 'Components/DragDropTile/DragDropTile'
 import TilesContext from 'Contexts/TilesContext'
 
 const EmptyImage =
@@ -121,15 +114,37 @@ const App: FC = () => {
 	}
 
 	return (
-		<Container>
-			<GameContainer>
-				<Header>
+		<div
+			style={{
+				display: 'flex',
+				height: '100vh',
+				flexDirection: 'row',
+			}}
+		>
+			<div
+				style={{
+					width: '75%',
+					height: '100%',
+				}}
+			>
+				<div
+					style={{
+						height: '10%',
+					}}
+				>
 					<button onClick={TogglePreview}>Toggle Preview</button>
 					<button onClick={Reset}>Reset</button>
-				</Header>
-				<TilesContainer
-					width={TileWidth * Column + 2}
-					height={TileHeight * Row}
+				</div>
+				<div
+					style={{
+						width: `${TileWidth * Column + 2}px`,
+						height: `${TileHeight * Row}px`,
+						position: 'relative',
+						border: '1px solid #000',
+						display: 'flex',
+						flexWrap: 'wrap',
+						flexDirection: 'row',
+					}}
 				>
 					{Tiles.map(tileData => (
 						<DropDropTile
@@ -140,13 +155,22 @@ const App: FC = () => {
 							id={tileData.id}
 						/>
 					))}
-				</TilesContainer>
-			</GameContainer>
-			<ShuffledTilesContainer>
+				</div>
+			</div>
+			<div
+				style={{
+					width: '25%',
+					height: '100%',
+					overflowY: 'scroll',
+					display: 'flex',
+					flexWrap: 'wrap',
+					flexDirection: 'row',
+				}}
+			>
 				{ShuffledTiles.map(tileData => (
 					<DragTile
 						image={
-							ReversedModifiedTiles[tileData.id]
+							ReversedModifiedTiles()[tileData.id]
 								? EmptyImage
 								: tileData.image
 						}
@@ -156,8 +180,8 @@ const App: FC = () => {
 						id={tileData.id}
 					/>
 				))}
-			</ShuffledTilesContainer>
-		</Container>
+			</div>
+		</div>
 	)
 }
 

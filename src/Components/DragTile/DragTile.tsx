@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react'
+import { FC, useContext, memo } from 'react'
 
 import type { Props } from './Types'
 
@@ -16,7 +16,7 @@ const DragTile: FC<Props> = ({ image, width, height, id }) => {
 			item: { id },
 			canDrag() {
 				// eslint-disable-next-line security/detect-object-injection
-				return !ReversedModifiedTiles[id]
+				return !ReversedModifiedTiles()[id]
 			},
 		}),
 		[ReversedModifiedTiles]
@@ -25,4 +25,10 @@ const DragTile: FC<Props> = ({ image, width, height, id }) => {
 	return <Tile image={image} width={width} height={height} ref={dragRef} />
 }
 
-export default DragTile
+export default memo(DragTile, (prev, next) => {
+	if (prev.height !== next.height) return false
+	if (prev.image !== next.image) return false
+	if (prev.width !== next.width) return false
+
+	return true
+})

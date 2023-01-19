@@ -1,5 +1,5 @@
 /* eslint-disable security/detect-object-injection */
-import { FC, useContext } from 'react'
+import { FC, useContext, memo } from 'react'
 
 import type { Props } from './Types'
 
@@ -9,7 +9,7 @@ import { MergeRef } from 'Utils/MergeRef'
 import { IItem } from 'Types'
 import TilesContext from 'Contexts/TilesContext'
 
-const DropDropTile: FC<Props> = ({ image, width, height, id }) => {
+const DragDropTile: FC<Props> = ({ image, width, height, id }) => {
 	const { SetTile, ModifiedTiles, ReversedModifiedTiles, IsCompleted } =
 		useContext(TilesContext)
 
@@ -29,7 +29,7 @@ const DropDropTile: FC<Props> = ({ image, width, height, id }) => {
 			accept: 'Tile',
 			canDrop: () => !IsCompleted,
 			drop(item) {
-				const previousPosition = ReversedModifiedTiles[item.id]
+				const previousPosition = ReversedModifiedTiles()[item.id]
 
 				if (previousPosition === id) return
 
@@ -53,4 +53,10 @@ const DropDropTile: FC<Props> = ({ image, width, height, id }) => {
 	)
 }
 
-export default DropDropTile
+export default memo(DragDropTile, (prev, next) => {
+	if (prev.height !== next.height) return false
+	if (prev.image !== next.image) return false
+	if (prev.width !== next.width) return false
+
+	return true
+})

@@ -2,11 +2,11 @@ import {
 	createContext,
 	FC,
 	ReactNode,
-	useMemo,
 	useState,
 	SetStateAction,
 	Dispatch,
 	useEffect,
+	useCallback,
 } from 'react'
 import { ITiles } from 'Types'
 
@@ -14,7 +14,7 @@ type IModifiedTiles = Record<string, string | undefined>
 interface ITilesContext {
 	SetTile: (id: string, positionId: string) => void
 	ModifiedTiles: IModifiedTiles
-	ReversedModifiedTiles: IModifiedTiles
+	ReversedModifiedTiles: () => IModifiedTiles
 	Row: number
 	SetRow: Dispatch<SetStateAction<number> | number>
 	Column: number
@@ -28,7 +28,7 @@ interface ITilesContext {
 const TilesContext = createContext<ITilesContext>({
 	SetTile: () => undefined,
 	ModifiedTiles: {},
-	ReversedModifiedTiles: {},
+	ReversedModifiedTiles: () => ({}),
 	Row: 0,
 	SetRow: () => undefined,
 	Column: 0,
@@ -44,34 +44,28 @@ export const TilesContextProvider: FC<{ children: ReactNode }> = ({
 }) => {
 	const [ModifiedTiles, SetModifiedTiles] = useState<IModifiedTiles>({})
 
-	const [Row, SetRow] = useState<number>(2)
-	const [Column, SetColumn] = useState<number>(2)
+	const [Row, SetRow] = useState<number>(20)
+	const [Column, SetColumn] = useState<number>(20)
 	const [IsCompleted, SetIsCompleted] = useState<boolean>(false)
 
 	const [Tiles, SetTiles] = useState<ITiles>([])
 
-	const SetTile = (positionId: string, id: string) => {
+	const SetTile = useCallback((positionId: string, id: string) => {
 		SetModifiedTiles(prev => ({
 			...prev,
 			[positionId]: id,
 		}))
-	}
+	}, [])
 
-	const ReversedModifiedTiles = useMemo(
-		() =>
-			Object.fromEntries(
-				Object.entries(ModifiedTiles).map(([key, value]) => [
-					value,
-					key,
-				])
-			),
-		[ModifiedTiles]
-	)
+	const ReversedModifiedTiles = () =>
+		Object.fromEntries(
+			Object.entries(ModifiedTiles).map(([key, value]) => [value, key])
+		)
 
-	const Reset = () => {
+	const Reset = useCallback(() => {
 		SetIsCompleted(false)
 		SetModifiedTiles({})
-	}
+	}, [])
 
 	useEffect(() => {
 		if (Row * Column !== Object.keys(ModifiedTiles).length) return
